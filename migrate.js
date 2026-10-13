@@ -24,7 +24,7 @@ const mysql = require('mysql2/promise');
       }
     : {})
 });
-  const sql = fs.readFileSync(path.join(__dirname,'..','schema.sql'),'utf8').replace(/^\s*--.*$/gm,'');
+  const sql = fs.readFileSync(path.join(__dirname,'schema.sql'),'utf8').replace(/^\s*--.*$/gm,'');
   for (const statement of sql.split(';').map(s=>s.trim()).filter(Boolean)) await db.query(statement);
   const alters = [
     "ALTER TABLE service_overrides ADD COLUMN markup_enabled TINYINT(1) NOT NULL DEFAULT 1",
