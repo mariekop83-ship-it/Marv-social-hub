@@ -1,10 +1,18 @@
+const fs = require('fs');
+const path = require('path');
 const mysql = require('mysql2/promise');
 const options = {
   host: process.env.DB_HOST, port: Number(process.env.DB_PORT || 3306),
   user: process.env.DB_USER, password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME, waitForConnections: true, connectionLimit: 10,
   queueLimit: 0, decimalNumbers: true, enableKeepAlive: true,
-  ...(String(process.env.DB_SSL || '').toLowerCase() === 'true' ? { ssl: { minVersion: 'TLSv1.2', rejectUnauthorized: true } } : {})
+  ...(String(process.env.DB_SSL || '').toLowerCase() === 'true' ? {
+    ssl: {
+      minVersion: 'TLSv1.2',
+      rejectUnauthorized: true,
+      ca: fs.readFileSync(path.join(__dirname, 'aiven-ca.pem'), 'utf8')
+    }
+  } : {})
 };
 const pool = mysql.createPool(options);
 async function query(sql, params = []) { const [rows] = await pool.execute(sql, params); return rows; }
