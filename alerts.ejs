@@ -1,0 +1,1 @@
+<div class="eyebrow">Updates</div><h1>Announcements</h1><div class="stack"><%if(!notifications.length){%><div class="card empty">No announcements yet.</div><%}else{notifications.forEach(n=>{%><article class="card"><h2><%=n.title%></h2><p style="white-space:pre-wrap"><%=n.message%></p><small class="muted"><%=n.created_at%></small></article><%})}%></div>
