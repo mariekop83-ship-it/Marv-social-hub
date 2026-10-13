@@ -11,7 +11,7 @@ const providers = require('./providers');
 const app = express();
 const port = Number(process.env.PORT||10000);
 if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) { console.error('SESSION_SECRET must be set to at least 32 characters.'); if(process.env.NODE_ENV==='production') process.exit(1); }
-app.set('trust proxy', 1); app.set('view engine','ejs'); app.set('views',__dirname+'/views');
+app.set('trust proxy', 1); app.set('view engine','ejs'); app.set('views',__dirname);
 app.use(helmet({contentSecurityPolicy:{directives:{defaultSrc:["'self'"],styleSrc:["'self'","'unsafe-inline'","https://fonts.googleapis.com"],fontSrc:["'self'","https://fonts.gstatic.com"],imgSrc:["'self'","data:","https:"],scriptSrc:["'self'","'unsafe-inline'"],connectSrc:["'self'"]}}}));
 app.use(express.urlencoded({extended:false,limit:'100kb'})); app.use(express.json({limit:'100kb'})); app.use(express.static(__dirname+'/public',{maxAge:process.env.NODE_ENV==='production'?'1d':0}));
 const MySQLStore=MySQLStoreFactory(session);
@@ -88,3 +88,4 @@ app.use((err,req,res,next)=>{console.error('Request failed:',err.message);if(res
     console.log('Initial admin account created from SETUP_ADMIN_* environment variables. Remove those bootstrap variables after successful sign-in.');
   }
   console.log('MySQL connection verified.');app.listen(port,'0.0.0.0',()=>console.log(`Mar Social Hub Node listening on ${port}`));}catch(e){console.error('Database connection or schema initialization failed. Run npm run migrate and verify Render environment variables/database network access.',e.message);process.exit(1);}})();
+app.set('views', __dirname);
