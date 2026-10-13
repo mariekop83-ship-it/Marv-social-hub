@@ -1,1 +1,39 @@
-<div class="row"><div><div class="eyebrow">Wallet</div><h1>Fund wallet</h1><p class="muted">Submit a transfer reference for admin review.</p></div></div><div class="cards"><div class="card"><h2>Payment instructions</h2><p style="white-space:pre-wrap"><%=paymentDetails%></p><p class="muted">Only submit a request after making the transfer. Your balance is not credited until the admin verifies and approves it.</p></div><div class="card"><h2>Submit payment</h2><form method="post" action="/fund"><input type="hidden" name="csrf" value="<%=csrf%>"><div class="field"><label>Amount (NGN)</label><input type="number" name="amount" min="100" max="100000000" step="0.01" required></div><div class="field"><label>Name used for transfer</label><input name="sender_name" maxlength="160"></div><div class="field"><label>Bank/payment reference</label><input name="payment_reference" maxlength="160"></div><div class="field"><label>Note</label><textarea name="note" maxlength="1000"></textarea></div><button class="btn">Submit for review</button></form></div></div><div class="card" style="margin-top:18px"><h2>My deposit requests</h2><%if(!deposits.length){%><p class="muted">No deposit requests yet.</p><%}else{%><div class="table-wrap"><table><tr><th>Reference</th><th>Amount</th><th>Status</th><th>Created</th></tr><%deposits.forEach(d=>{%><tr><td><%=d.reference%></td><td><%=money(d.amount)%></td><td><span class="pill"><%=d.status%></span></td><td><%=d.created_at%></td></tr><%})%></table></div><%}%></div>
+<div class="row"><div><div class="eyebrow">Wallet</div><h1>Fund wallet</h1><p class="muted">Pay using one of the methods below, upload your receipt and submit. The admin will approve or decline it.</p></div></div>
+<div class="cards">
+  <div class="card">
+    <h2>Pay to</h2>
+    <% if(methods.length){ %>
+      <div class="stack">
+      <% methods.forEach(function(m){ %><div class="notice"><strong><%= m.title %></strong><p style="white-space:pre-wrap;margin:6px 0 0"><%= m.details %></p></div><% }) %>
+      </div>
+    <% } else if(paymentDetails){ %>
+      <p style="white-space:pre-wrap"><%= paymentDetails %></p>
+    <% } else { %>
+      <p class="muted">No payment details have been added yet. Please contact support.</p>
+    <% } %>
+    <p class="muted">Only submit after you have paid. Your wallet is credited when the admin approves the payment.</p>
+  </div>
+  <div class="card">
+    <h2>Submit payment</h2>
+    <form method="post" action="/fund" enctype="multipart/form-data">
+      <input type="hidden" name="csrf" value="<%= csrf %>">
+      <% if(methods.length){ %>
+      <div class="field"><label>Payment method used</label><select name="method" required><% methods.forEach(function(m){ %><option value="<%= m.title %>"><%= m.title %></option><% }) %></select></div>
+      <% } %>
+      <div class="field"><label>Amount paid (NGN)</label><input type="number" name="amount" min="100" max="100000000" step="0.01" required></div>
+      <div class="field"><label>Name used for the transfer</label><input name="sender_name" maxlength="160"></div>
+      <div class="field"><label>Payment reference (optional)</label><input name="payment_reference" maxlength="160"></div>
+      <div class="field"><label>Payment receipt (JPG, PNG, WEBP or PDF, up to 4 MB)</label><input type="file" name="receipt" accept="image/jpeg,image/png,image/webp,application/pdf" required></div>
+      <div class="field"><label>Note (optional)</label><textarea name="note" maxlength="1000"></textarea></div>
+      <button class="btn" type="submit">Submit payment</button>
+    </form>
+  </div>
+</div>
+<div class="card">
+  <h2>My payments</h2>
+  <% if(!deposits.length){ %><p class="muted">No payments yet.</p><% } else { %>
+  <div class="table-wrap"><table><thead><tr><th>Reference</th><th>Amount</th><th>Method</th><th>Status</th><th>Receipt</th><th>Date</th></tr></thead><tbody>
+  <% deposits.forEach(function(d){ %><tr><td><%= d.reference %></td><td><%= money(d.amount) %></td><td><%= d.method %></td><td><span class="pill"><%= d.status==='pending'?'Pending review':(d.status==='approved'?'Approved':'Declined') %></span></td><td><% if(d.has_receipt){ %><a href="/receipt/<%= d.id %>" target="_blank" rel="noopener">View</a><% } else { %>-<% } %></td><td><%= d.created_at %></td></tr><% }) %>
+  </tbody></table></div>
+  <% } %>
+</div>

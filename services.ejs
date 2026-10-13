@@ -1,1 +1,28 @@
-<div class="row"><div><div class="eyebrow">Service catalogue</div><h1><%= ({numbers:'Number services',smm:'SMM boosting',logs:'Social logs'})[type] %></h1><p class="muted">These entries come from your administrator-synced provider catalogues.</p></div><%if(user){%><a class="btn secondary" href="/orders">My orders</a><%}%></div><div class="inline-form" style="margin:16px 0"><a class="btn <%=type==='numbers'?'':'secondary'%>" href="/services?type=numbers">Numbers</a><a class="btn <%=type==='smm'?'':'secondary'%>" href="/services?type=smm">SMM Boosting</a><a class="btn <%=type==='logs'?'':'secondary'%>" href="/services?type=logs">Social Logs</a></div><div class="card"><%if(!services.length){%><div class="empty"><h2>No synced services yet</h2><p>Ask an administrator to configure the provider API and run catalogue sync in Admin → Website settings. Services without an approved customer price should not be sold.</p></div><%}else{%><div class="table-wrap"><table><tr><th>Service</th><th>Category</th><th>Provider</th><th>Customer price</th><th>Quantity</th></tr><%services.forEach(s=>{%><tr><td><strong><%=s.name%></strong><br><small class="muted">ID: <%=s.provider_service_id%></small></td><td><%=s.category||'General'%></td><td><%=s.provider_key%></td><td><%=Number(s.display_price)>0?money(s.display_price):'Price not returned'%><%if(Number(s.display_price)>0){%><br><small class="muted"><%=s.price_source==='admin'?'Admin price':'Provider price estimate'%></small><%}%></td><td><%=s.min_quantity%> – <%=s.max_quantity%></td></tr><%})%></table></div><p class="muted" style="font-size:12px">Catalogue viewing is enabled. Paid order submission is deliberately disabled in this migration build until provider-specific checkout, status reconciliation, and refund flows are implemented and staging-tested.</p><%}%></div>
+<div class="row">
+  <div>
+    <div class="eyebrow"><%= feature ? 'Service' : 'Service catalogue' %></div>
+    <h1><%= feature ? feature.title : ({numbers:'Numbers',smm:'SMM Boosting',logs:'Social Logs'})[type] %></h1>
+    <p class="muted">Prices are in naira. Services appear here after an administrator syncs the provider catalogue.</p>
+  </div>
+  <% if(user && feature){ %><a class="btn secondary" href="/history/<%= slug %>">History</a><% } else if(user){ %><a class="btn secondary" href="/orders">My orders</a><% } %>
+</div>
+
+<% if(!services.length){ %>
+  <div class="card"><div class="empty"><h2>No services yet</h2><p>An administrator needs to add the provider key and run the catalogue sync in Admin, Website settings.</p></div></div>
+<% } else { %>
+  <div class="card">
+    <div class="product-grid">
+      <% services.forEach(function(s){ %>
+        <div class="product-card">
+          <div class="product-body">
+            <span class="pill"><%= s.category || 'General' %></span>
+            <h3><%= s.name %></h3>
+            <p class="muted">Quantity <%= s.min_quantity %> to <%= s.max_quantity %></p>
+            <div class="product-foot"><strong class="price"><%= Number(s.display_price)>0 ? money(s.display_price) : 'Price not set' %></strong></div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    <p class="muted catalogue-note">Ordering is not switched on in this version yet. Browsing is available now.</p>
+  </div>
+<% } %>

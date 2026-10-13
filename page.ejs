@@ -1,3 +1,84 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#10152b"><title><%= title %> · Mar Social Hub</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/style.css"><style>
-:root{--msh-bg:#f5f7fc;--msh-ink:#17213c;--msh-muted:#64708a;--msh-primary:#5b5de6;--msh-line:#e4e8f2}*{box-sizing:border-box}body{margin:0;background:var(--msh-bg);color:var(--msh-ink);font-family:'DM Sans',sans-serif}a{color:var(--msh-primary);text-decoration:none}.shell{min-height:100vh}.topbar{height:auto;min-height:72px;background:#11172f;color:white;display:flex;align-items:center;justify-content:space-between;padding:14px clamp(16px,4vw,56px);gap:18px;flex-wrap:wrap}.brand{font:800 19px Manrope,sans-serif;color:#fff;letter-spacing:-.6px}.brand span{color:#9a9bff}.nav{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.nav a,.nav button{color:#dce0f5;background:transparent;border:0;padding:9px 11px;border-radius:10px;font:600 13px 'DM Sans';cursor:pointer}.nav a:hover{background:#242b4d;color:#fff}.wrap{max-width:1180px;margin:0 auto;padding:32px 20px 64px}.hero{padding:36px 0 25px}.eyebrow{font-size:11px;letter-spacing:1.5px;font-weight:800;color:var(--msh-primary);text-transform:uppercase}.hero h1{font:800 clamp(30px,5vw,48px)/1.1 Manrope,sans-serif;letter-spacing:-1.5px;max-width:800px;margin:12px 0}.hero p,.muted{color:var(--msh-muted);line-height:1.65}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:11px;padding:12px 17px;background:var(--msh-primary);color:white;font-weight:700;cursor:pointer}.btn.secondary{background:#edf0ff;color:#4144b9}.btn.danger{background:#fff0f0;color:#b42318}.btn.small{padding:8px 11px;font-size:12px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}.card{background:#fff;border:1px solid var(--msh-line);border-radius:18px;padding:22px;box-shadow:0 8px 30px #1d2a4d08}.card h2,.card h3{font-family:Manrope,sans-serif;margin:0 0 12px}.stat{font:800 28px Manrope;margin:10px 0}.row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.field{display:grid;gap:7px;margin:15px 0}.field label{font-size:13px;font-weight:700}.field input,.field textarea,.field select,input,textarea,select{font:inherit;width:100%;border:1px solid #dce1ed;border-radius:10px;padding:11px 12px;background:white;color:var(--msh-ink)}.field textarea{min-height:95px}.form{max-width:540px;margin:22px auto}.notice,.flash{padding:13px 15px;border-radius:12px;background:#eef2ff;color:#373c8d;margin:15px 0}.flash.success{background:#e9f9ef;color:#17663a}.flash.error{background:#fff0f0;color:#a32929}.flash.warning{background:#fff7e6;color:#865d00}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--msh-line);vertical-align:top}th{color:#67718a;font-size:11px;text-transform:uppercase;letter-spacing:.5px}.pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef0ff;color:#4548ba;font-size:11px;font-weight:700}.price{font:800 18px Manrope}.foot{color:#77819a;text-align:center;font-size:12px;padding:30px}.service-list{display:grid;gap:12px}.service-row{display:grid;grid-template-columns:minmax(0,1fr) 180px;gap:16px;align-items:center}.stack{display:grid;gap:12px}.inline-form{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.inline-form input,.inline-form select{width:auto;min-width:100px}.empty{color:var(--msh-muted);padding:25px;text-align:center}@media(max-width:650px){.wrap{padding:22px 13px 45px}.topbar{padding:13px}.service-row{grid-template-columns:1fr}.nav a,.nav button{padding:8px}.card{padding:17px}}
-</style></head><body><div class="shell"><header class="topbar"><a class="brand" href="/">MAR <span>SOCIAL HUB</span></a><nav class="nav"><a href="/services?type=numbers">Numbers</a><a href="/services?type=smm">SMM Boosting</a><a href="/services?type=logs">Social Logs</a><% if(user){%><a href="/dashboard">Dashboard</a><a href="/orders">Orders</a><a href="/fund">Wallet</a><% if(user.role==='admin'){%><a href="/admin">Admin</a><% } %><form method="post" action="/logout" style="display:inline"><input type="hidden" name="csrf" value="<%= csrf %>"><button type="submit">Sign out</button></form><% }else{%><a href="/login">Sign in</a><a class="btn small" href="/register">Create account</a><% } %></nav></header><main class="wrap"><% if(flash){%><div class="flash <%= flash.type %>"><%= flash.message %></div><% } %><%- include(body) %></main><footer class="foot">© <%= new Date().getFullYear() %> Mar Social Hub · Secure services, clear pricing.</footer></div></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d19">
+<title><%= title %> · Mar Social Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/msh-extra.css">
+</head>
+<body>
+<div class="loader" role="status" aria-live="polite" aria-hidden="false">
+  <div class="loader-content">
+    <div class="mar-loader-mark"><span>M</span><span>A</span><span>R</span><i>.</i></div>
+    <div class="loader-brand">SOCIAL HUB</div>
+    <div class="loader-caption">Loading…</div>
+    <div class="loader-track"><span></span></div>
+  </div>
+</div>
+<script>setTimeout(function(){var l=document.querySelector('.loader');if(l)l.classList.add('hidden');},6000);</script>
+
+<div class="app">
+  <div class="mobile-shade"></div>
+  <aside class="sidebar" id="menu">
+    <a class="brand" href="/"><span class="brand-mark">M</span><span>MAR Social Hub</span></a>
+    <nav class="nav">
+      <div class="nav-label">MAIN</div>
+      <a class="<%= path==='/'?'active':'' %>" href="/">Home</a>
+      <% if(user){ %><a class="<%= path==='/dashboard'?'active':'' %>" href="/dashboard">Dashboard</a><% } %>
+
+      <% [['NUMBERS',['buy-number-1','buy-number-2']],['SMM BOOSTING',['smm-boost-1','smm-boost-2']],['SOCIAL LOGS',['social-log-1','social-log-2']]].forEach(function(g){ %>
+        <div class="nav-label"><%= g[0] %></div>
+        <% g[1].forEach(function(sl){ var f=features[sl]; %>
+          <a class="<%= path==='/service/'+sl?'active':'' %>" href="/service/<%= sl %>"><span><%= f.icon %></span> <%= f.title %></a>
+          <a class="sub <%= path==='/history/'+sl?'active':'' %>" href="/history/<%= sl %>">History</a>
+        <% }) %>
+      <% }) %>
+
+      <% if(user){ %>
+        <div class="nav-label">WALLET</div>
+        <a class="<%= path==='/fund'?'active':'' %>" href="/fund">Fund wallet</a>
+        <a class="<%= path==='/transactions'?'active':'' %>" href="/transactions">Transactions</a>
+        <div class="nav-label">ACCOUNT</div>
+        <a class="<%= path==='/profile'?'active':'' %>" href="/profile">Profile</a>
+        <a class="<%= path==='/support'?'active':'' %>" href="/support">Support</a>
+        <a class="<%= path==='/alerts'?'active':'' %>" href="/alerts">Announcements</a>
+        <% if(user.role==='admin'){ %>
+          <div class="nav-label">ADMIN</div>
+          <% [['/admin','Admin home'],['/admin/deposits','Payment approvals'],['/admin/users','Customers and wallets'],['/admin/services','Service prices'],['/admin/orders','All orders'],['/admin/messages','Support inbox'],['/admin/channels','Payments and contact'],['/admin/settings','Website settings'],['/admin/audit','Audit log']].forEach(function(a){ %>
+            <a class="<%= path===a[0]?'active':'' %>" href="<%= a[0] %>"><%= a[1] %></a>
+          <% }) %>
+        <% } %>
+        <form method="post" action="/logout" class="nav-logout">
+          <input type="hidden" name="csrf" value="<%= csrf %>">
+          <button type="submit" class="btn secondary">Sign out</button>
+        </form>
+      <% } else { %>
+        <div class="nav-label">ACCOUNT</div>
+        <a class="<%= path==='/login'?'active':'' %>" href="/login">Sign in</a>
+        <a class="<%= path==='/register'?'active':'' %>" href="/register">Create account</a>
+      <% } %>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="top-left">
+        <button class="hamb" type="button" aria-label="Open menu" aria-controls="menu" aria-expanded="false">&#9776;</button>
+        <div class="page-title"><%= title %></div>
+      </div>
+    </div>
+    <% if(flash){ %><div class="flash <%= flash.type %>"><%= flash.message %></div><% } %>
+    <%- include(body) %>
+    <p class="site-foot">© <%= new Date().getFullYear() %> Mar Social Hub</p>
+  </main>
+</div>
+
+<% if(user){ %><a class="support-float" href="/support" aria-label="Contact support">?</a><% } %>
+<script src="/assets/app.js"></script>
+</body>
+</html>

@@ -1,1 +1,12 @@
-<div class="row"><div><div class="eyebrow">Wallet management</div><h1>Deposit approvals</h1><p class="muted">Approving a pending request credits the customer once in a database transaction.</p></div><a class="btn secondary" href="/admin">Back to admin</a></div><div class="card"><div class="table-wrap"><table><tr><th>Customer</th><th>Amount</th><th>Reference</th><th>Payment details</th><th>Status</th><th>Review</th></tr><%deposits.forEach(d=>{%><tr><td><%=d.name%><br><small><%=d.email%></small></td><td><%=money(d.amount)%></td><td><%=d.reference%><br><small><%=d.created_at%></small></td><td><%=d.payment_sender_name||'—'%><br><%=d.payment_reference||'—'%><br><%=d.receipt_note||''%></td><td><span class="pill"><%=d.status%></span></td><td><%if(d.status==='pending'){%><form class="stack" method="post" action="/admin/deposits/<%=d.id%>/review"><input type="hidden" name="csrf" value="<%=csrf%>"><button class="btn small" name="status" value="approved">Approve</button><button class="btn danger small" name="status" value="rejected">Reject</button></form><%}else{%>Reviewed<%}%></td></tr><%})%></table></div></div>
+<div class="row"><div><div class="eyebrow">Wallet management</div><h1>Payment approvals</h1><p class="muted">Check the receipt, then approve or decline. Approving credits the customer once.</p></div><a class="btn secondary" href="/admin">Back to admin</a></div>
+<div class="card"><div class="table-wrap"><table><thead><tr><th>Customer</th><th>Amount</th><th>Reference</th><th>Payment details</th><th>Receipt</th><th>Status</th><th>Review</th></tr></thead><tbody>
+<% deposits.forEach(function(d){ %><tr>
+<td><%= d.name %><br><small><%= d.email %></small></td>
+<td><%= money(d.amount) %></td>
+<td><%= d.reference %><br><small><%= d.created_at %></small></td>
+<td><strong><%= d.method %></strong><br><%= d.payment_sender_name||'-' %><br><%= d.payment_reference||'-' %><br><%= d.receipt_note||'' %></td>
+<td><% if(d.has_receipt){ %><a href="/receipt/<%= d.id %>" target="_blank" rel="noopener">Open receipt</a><% } else { %>None<% } %></td>
+<td><span class="pill"><%= d.status %></span></td>
+<td><% if(d.status==='pending'){ %><form class="stack" method="post" action="/admin/deposits/<%= d.id %>/review"><input type="hidden" name="csrf" value="<%= csrf %>"><button class="btn small" name="status" value="approved" data-confirm="Approve this payment and credit the customer?">Approve</button><button class="btn danger small" name="status" value="rejected" data-confirm="Decline this payment?">Decline</button></form><% } else { %>Reviewed<% } %></td>
+</tr><% }) %>
+</tbody></table></div></div>

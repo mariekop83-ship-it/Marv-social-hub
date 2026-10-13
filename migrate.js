@@ -35,7 +35,8 @@ const mysql = require('mysql2/promise');
     "ALTER TABLE orders ADD COLUMN phone_number VARCHAR(80) NULL",
     "ALTER TABLE orders ADD COLUMN otp_code VARCHAR(100) NULL",
     "ALTER TABLE orders ADD COLUMN expires_at DATETIME NULL",
-    "ALTER TABLE orders ADD COLUMN last_polled_at DATETIME NULL"
+    "ALTER TABLE orders ADD COLUMN last_polled_at DATETIME NULL",
+    "ALTER TABLE deposits ADD COLUMN receipt_data MEDIUMBLOB NULL"
   ];
   for (const sql of alters) { try { await db.query(sql); } catch (e) { if (!['ER_DUP_FIELDNAME','ER_DUP_KEYNAME'].includes(e.code)) throw e; } }
   await db.end(); console.log('Migration complete. Existing tables/data were preserved.');

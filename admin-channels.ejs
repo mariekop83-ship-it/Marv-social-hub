@@ -1,0 +1,64 @@
+<div class="row"><div><div class="eyebrow">Administrator</div><h1>Payments and contact</h1><p class="muted">Set where customers pay, how they reach you, and which Telegram chat receives payment receipts.</p></div><a class="btn secondary" href="/admin">Back to admin</a></div>
+
+<div class="card">
+  <h2>Payment methods</h2>
+  <p class="muted">Customers see these on the Fund wallet page, for example a bank account or crypto wallet.</p>
+  <form method="post" action="/admin/payment-methods">
+    <input type="hidden" name="csrf" value="<%= csrf %>">
+    <div class="field"><label>Name (example: Opay, GTBank)</label><input name="title" maxlength="60" required></div>
+    <div class="field"><label>Payment details (account number, account name, instructions)</label><textarea name="details" maxlength="2000" required></textarea></div>
+    <div class="field"><label>Order (lower shows first)</label><input type="number" name="sort_order" value="0" min="0" max="9999"></div>
+    <button class="btn" type="submit">Add payment method</button>
+  </form>
+  <% methods.forEach(function(m){ %>
+  <div class="notice" style="margin-top:14px">
+    <form method="post" action="/admin/payment-methods/<%= m.id %>">
+      <input type="hidden" name="csrf" value="<%= csrf %>">
+      <div class="field"><label>Name</label><input name="title" value="<%= m.title %>" maxlength="60" required></div>
+      <div class="field"><label>Details</label><textarea name="details" maxlength="2000" required><%= m.details %></textarea></div>
+      <div class="inline-form"><input type="number" name="sort_order" value="<%= m.sort_order %>" min="0" max="9999" style="width:90px">
+      <select name="enabled"><option value="1" <%= m.enabled?'selected':'' %>>Shown to customers</option><option value="0" <%= m.enabled?'':'selected' %>>Hidden</option></select>
+      <button class="btn small" type="submit">Save</button></div>
+    </form>
+    <form method="post" action="/admin/payment-methods/<%= m.id %>/delete" style="margin-top:8px"><input type="hidden" name="csrf" value="<%= csrf %>"><button class="btn danger small" type="submit" data-confirm="Delete this payment method?">Delete</button></form>
+  </div>
+  <% }) %>
+</div>
+
+<div class="card">
+  <h2>Contact options</h2>
+  <p class="muted">Shown on the customer Support page, for example WhatsApp or a Telegram channel. A link starts with https://, mailto: or tel:.</p>
+  <form method="post" action="/admin/contact-modes">
+    <input type="hidden" name="csrf" value="<%= csrf %>">
+    <div class="field"><label>Label (example: WhatsApp)</label><input name="label" maxlength="60" required></div>
+    <div class="field"><label>Link (example: https://wa.me/234XXXXXXXXXX)</label><input name="url" maxlength="500" required></div>
+    <div class="field"><label>Order (lower shows first)</label><input type="number" name="sort_order" value="0" min="0" max="9999"></div>
+    <button class="btn" type="submit">Add contact option</button>
+  </form>
+  <% contacts.forEach(function(c){ %>
+  <div class="notice" style="margin-top:14px">
+    <form method="post" action="/admin/contact-modes/<%= c.id %>">
+      <input type="hidden" name="csrf" value="<%= csrf %>">
+      <div class="field"><label>Label</label><input name="label" value="<%= c.label %>" maxlength="60" required></div>
+      <div class="field"><label>Link</label><input name="url" value="<%= c.url %>" maxlength="500" required></div>
+      <div class="inline-form"><input type="number" name="sort_order" value="<%= c.sort_order %>" min="0" max="9999" style="width:90px">
+      <select name="enabled"><option value="1" <%= c.enabled?'selected':'' %>>Shown</option><option value="0" <%= c.enabled?'':'selected' %>>Hidden</option></select>
+      <button class="btn small" type="submit">Save</button></div>
+    </form>
+    <form method="post" action="/admin/contact-modes/<%= c.id %>/delete" style="margin-top:8px"><input type="hidden" name="csrf" value="<%= csrf %>"><button class="btn danger small" type="submit" data-confirm="Delete this contact option?">Delete</button></form>
+  </div>
+  <% }) %>
+</div>
+
+<div class="card">
+  <h2>Telegram payment receiver</h2>
+  <p class="muted">Each payment a customer submits, with its receipt, is also sent to this Telegram chat. You still approve or decline on this website.</p>
+  <form method="post" action="/admin/telegram">
+    <input type="hidden" name="csrf" value="<%= csrf %>">
+    <div class="field"><label>Bot token from BotFather <%= telegram.hasToken ? '(one is saved, leave empty to keep it)' : '' %></label><input name="bot_token" autocomplete="off" placeholder="<%= telegram.hasToken ? 'Saved' : '123456789:AA...' %>"></div>
+    <div class="field"><label>Chat ID (your number, a group ID, or @channelname)</label><input name="chat_id" value="<%= telegram.chat %>" maxlength="40"></div>
+    <% if(telegram.hasToken){ %><div class="field"><label><input type="checkbox" name="clear_token" value="1" style="width:auto"> Remove the saved bot token</label></div><% } %>
+    <button class="btn" type="submit">Save Telegram settings</button>
+  </form>
+  <form method="post" action="/admin/telegram/test" style="margin-top:10px"><input type="hidden" name="csrf" value="<%= csrf %>"><button class="btn secondary" type="submit">Send a test message</button></form>
+</div>
