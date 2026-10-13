@@ -6,8 +6,8 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const {pool,query,one,setting,saveSetting} = require('./lib/db');
-const providers = require('./lib/providers');
+const {pool,query,one,setting,saveSetting} = require('./db');
+const providers = require('./providers');
 const app = express();
 const port = Number(process.env.PORT||10000);
 if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) { console.error('SESSION_SECRET must be set to at least 32 characters.'); if(process.env.NODE_ENV==='production') process.exit(1); }
